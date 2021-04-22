@@ -12,11 +12,8 @@ app = Flask(__name__)
 model = pickle.load(open('xgboost_regression_model.pkl' , 'rb'))
 @app.route('/' ,methods =['GET'])
 def home():
-    return render_template('home.html')
+    return render_template('index.html')
 
-@app.route('/trail',methods =['GET'])
-def trial():
-    return render_template('trial.html')
 
 #initialize standard scaler
 standard_to = StandardScaler()
@@ -56,12 +53,14 @@ def predict():
         prediction = model.predict(np.array([Present_Price,Kms_Driven,Owner,Year,Fuel_Type_Diesel,Fuel_Type_Petrol,Seller_Type_Individual,Transmission_Manual]).reshape(1,-1))
         
         output = round(prediction[0],2)
+        
+        print(output)
         if output<0:
-            return render_template('home.html',prediction_texts="Sorry you cannot sell this car")
+            return render_template('index.html',prediction_texts="Sorry you cannot sell this car")
         else:
-            return render_template('home.html',prediction_text="You Can Sell The Car at {}".format(output))
+            return render_template('index.html',prediction_text="You Can Sell The Car at {} lakhs".format(str(output)))
     else:
-        return render_template('home.html')
+        return render_template('index.html')
         
 
 if __name__=="__main__":
